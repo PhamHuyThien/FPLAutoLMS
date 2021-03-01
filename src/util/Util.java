@@ -14,19 +14,27 @@ import java.util.regex.Pattern;
  * @author Administrator
  */
 public class Util {
-    public static String[] regex(String regex, String input){
+
+    public static void sleep(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException ex) {
+        }
+    }
+
+    public static String[] regex(String regex, String input) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input);
         ArrayList<String> alValue = new ArrayList<>();
-        while(matcher.find()){
+        while (matcher.find()) {
             alValue.add(matcher.group());
         }
-        if(alValue.isEmpty()){
+        if (alValue.isEmpty()) {
             return null;
         }
         String[] strValues = new String[alValue.size()];
-        int i=0;
-        for(String s: alValue){
+        int i = 0;
+        for (String s : alValue) {
             strValues[i] = alValue.get(i);
             i++;
         }

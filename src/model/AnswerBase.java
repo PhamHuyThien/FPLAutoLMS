@@ -11,7 +11,7 @@ import java.util.Arrays;
  *
  * @author Administrator
  */
-public class AnswerBase {
+public class AnswerBase implements Comparable<AnswerBase> {
 
     private int id;
     private String question;
@@ -21,6 +21,10 @@ public class AnswerBase {
     public AnswerBase() {
     }
 
+    public AnswerBase(int id) {
+        this.id = id;
+    }
+
     public AnswerBase(int id, String question, String[] answerTexts, int bestSolutionId) {
         this.id = id;
         this.question = question;
@@ -28,7 +32,6 @@ public class AnswerBase {
         this.bestSolutionId = bestSolutionId;
     }
 
-    
     public int getId() {
         return id;
     }
@@ -53,8 +56,6 @@ public class AnswerBase {
         this.answerTexts = answerTexts;
     }
 
-    
-
     public int getBestSolutionId() {
         return bestSolutionId;
     }
@@ -68,6 +69,12 @@ public class AnswerBase {
         return "AnswerBase{" + "id=" + id + ", question=" + question + ", answerTexts=" + Arrays.toString(answerTexts) + ", bestSolutionId=" + bestSolutionId + '}';
     }
 
-
+    @Override
+    public int compareTo(AnswerBase o) {
+        if (o == null) {
+            return 1;
+        }
+        return this.getId() - o.getId();
+    }
 
 }

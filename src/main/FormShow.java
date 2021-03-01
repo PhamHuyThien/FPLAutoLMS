@@ -19,6 +19,7 @@ public class FormShow extends javax.swing.JFrame {
 //        formShow.updateComponent();
 //        formShow.setVisible(true);
 //    }
+
     private Quiz quiz;
 
     public FormShow() {
@@ -62,12 +63,12 @@ public class FormShow extends javax.swing.JFrame {
             }
         });
 
-        lbQuestionNum.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Câu hỏi số 6:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", 1, 24))); // NOI18N
+        lbQuestionNum.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Câu hỏi số ... :", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", 1, 24))); // NOI18N
 
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Câu hỏi:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", 0, 14))); // NOI18N
 
         lbQuestion.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        lbQuestion.setText("<html>ThienDepzaii</html>");
+        lbQuestion.setText("<html>Không có dữ liệu...</html>");
         lbQuestion.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         lbQuestion.setAutoscrolls(true);
 
@@ -90,7 +91,7 @@ public class FormShow extends javax.swing.JFrame {
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Đáp án:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", 0, 14))); // NOI18N
 
         lbBestSolution.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        lbBestSolution.setText("<html>ThienDepzaii</html>");
+        lbBestSolution.setText("<html>Không có dữ liệu</html>");
         lbBestSolution.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -177,7 +178,7 @@ public class FormShow extends javax.swing.JFrame {
 
         lbTitle.setFont(new java.awt.Font("Consolas", 1, 36)); // NOI18N
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTitle.setText("<Quiz 6/>");
+        lbTitle.setText("< ... />");
 
         jLabel2.setFont(new java.awt.Font("Consolas", 0, 10)); // NOI18N
         jLabel2.setText("ThienDepZaii is the best! =))");
@@ -221,8 +222,8 @@ public class FormShow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbQuestionNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(lbQuestionNum, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -248,17 +249,18 @@ public class FormShow extends javax.swing.JFrame {
         setVisible(false);
         Main.formMain.setVisible(true);
     }//GEN-LAST:event_formWindowClosing
-    
-    private void actionPageNum(){
+
+    private void actionPageNum() {
         int id = getPageText();
-        if(id==-1){
+        if (id == -1) {
             return;
         }
-        if(id<1 || id>getSizAnswerBase()){
+        if (id < 1 || id > getSizAnswerBase()) {
             return;
         }
         updateComponent(--id);
     }
+
     private void onclickPrev() {
         int prev = getPageText() - 1;
         if (prev == -2) {
@@ -303,11 +305,11 @@ public class FormShow extends javax.swing.JFrame {
         if (this.quiz == null) {
             return;
         }
-        setTitle(this.quiz.getName()+" - "+this.quiz.getId()+" - ThienDepZaii");
+        setTitle(this.quiz.getName() + " - ThienDepZaii");
         lbTitle.setText("<" + this.quiz.getName() + "/>");
-        setPageText(id + 1);
-        updateQuestionNum("Câu hỏi số " + (id + 1) + ":");
-        if (this.quiz.getAnswerBases().length > 0) {
+        if (id > -1 && id < getSizAnswerBase()) {
+            setPageText(id + 1);
+            updateQuestionNum("Câu hỏi số " + (id + 1) + ":");
             int bestSolutionId = this.quiz.getAnswerBases()[id].getBestSolutionId();
             updateQuestion(this.quiz.getAnswerBases()[id].getQuestion());
             updateAnswer(this.quiz.getAnswerBases()[id].getAnswerTexts()[bestSolutionId]);
@@ -321,21 +323,21 @@ public class FormShow extends javax.swing.JFrame {
     private void updateAnswer(String text) {
         lbBestSolution.setText(parseNewLineLabel(text));
     }
-    
-    private static String parseNewLineLabel(String inp){
+
+    private static String parseNewLineLabel(String inp) {
         int idNewLine = 8;
         inp = inp.trim().replaceAll("\\s\\s", "\\s");
         String[] centences = inp.split("\\s");
         StringBuilder sb = new StringBuilder();
-        for(int i=0; i<centences.length; i++){
+        for (int i = 0; i < centences.length; i++) {
             sb.append(centences[i]);
-            if(i!=0 && i%idNewLine==0){
+            if (i != 0 && i % idNewLine == 0) {
                 sb.append("<br/>");
-            }else{
+            } else {
                 sb.append(" ");
             }
         }
-        return "<html>"+sb.toString().trim()+"</html>";
+        return "<html>" + sb.toString().trim() + "</html>";
     }
 
     private void updateQuestionNum(String text) {
@@ -365,13 +367,7 @@ public class FormShow extends javax.swing.JFrame {
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnPrev;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
