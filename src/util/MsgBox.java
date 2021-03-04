@@ -14,6 +14,34 @@ import javax.swing.JOptionPane;
  */
 public class MsgBox {
 
+    public static boolean confirm(Component c, String content) {
+        return JOptionPane.showConfirmDialog(c, content) == 0;
+    }
+
+    public static boolean confirmWar(Component c, String content) {
+        return JOptionPane.showConfirmDialog(c, content, "AutoLMS Warning!!!", JOptionPane.WARNING_MESSAGE) == 0;
+    }
+
+    public static boolean confirmWar(String content) {
+        return JOptionPane.showConfirmDialog(null, content, "AutoLMS Warning!!!", JOptionPane.WARNING_MESSAGE) == 0;
+    }
+
+    public static boolean confirmInf(Component c, String content) {
+        return JOptionPane.showConfirmDialog(c, content, "AutoLMS Infomation!!!", JOptionPane.INFORMATION_MESSAGE) == 0;
+    }
+
+    public static boolean confirmInf(String content) {
+        return JOptionPane.showConfirmDialog(null, content, "AutoLMS Infomation!!!", JOptionPane.INFORMATION_MESSAGE) == 0;
+    }
+
+    public static boolean confirmErr(Component c, String content) {
+        return JOptionPane.showConfirmDialog(c, content, "AutoLMS Error!!!", JOptionPane.ERROR_MESSAGE) == 0;
+    }
+
+    public static boolean confirmErr(String content) {
+        return JOptionPane.showConfirmDialog(null, content, "AutoLMS Error!!!", JOptionPane.ERROR_MESSAGE) == 0;
+    }
+
     public static void alert(Component c, String content) {
         JOptionPane.showMessageDialog(c, content);
     }

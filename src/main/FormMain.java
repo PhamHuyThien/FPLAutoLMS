@@ -5,12 +5,16 @@ import java.util.Collections;
 import java.util.List;
 import lms.LMSException;
 import lms.LMSGetAnswerBase;
-import lms.LMSGetAnswerBaseValue;
 import lms.LMSGetCourse;
 import lms.LMSGetQuiz;
 import lms.LMSLogin;
+import lms.LMSSolution;
 import lms.LMSUtil;
 import lms.pool.LMSPoolGetAnswerBaseValue;
+import lms.pool.LMSPoolGetQuizState;
+import lms.selenium.LMSChromeDriver;
+import lms.selenium.LMSDriver;
+import lms.selenium.LMSDriverSolution;
 import model.Account;
 import model.AnswerBase;
 import model.Course;
@@ -28,7 +32,7 @@ import util.Util;
  * @Gmail ThienDz.DEV@gmail.com
  */
 public class FormMain extends javax.swing.JFrame {
-
+    LMSDriver lMSDriver;
     public FormMain() {
         initComponents();
         setLocationRelativeTo(null);
@@ -63,9 +67,15 @@ public class FormMain extends javax.swing.JFrame {
         lbInfo = new javax.swing.JLabel();
         btnContact = new javax.swing.JToggleButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("FPL@utoLMS V1.0.0  - 10 Quiz 10 Điểm Easy!");
+        setAlwaysOnTop(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -152,6 +162,11 @@ public class FormMain extends javax.swing.JFrame {
         btnSolution.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
         btnSolution.setText("Auto Solution Coming soon");
         btnSolution.setEnabled(false);
+        btnSolution.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSolutionActionPerformed(evt);
+            }
+        });
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -377,6 +392,88 @@ public class FormMain extends javax.swing.JFrame {
         onclickGetQuiz();
     }//GEN-LAST:event_btnGetQuizActionPerformed
 
+    private void btnSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolutionActionPerformed
+        onclickSolution();
+    }//GEN-LAST:event_btnSolutionActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        windowOnClosing();
+    }//GEN-LAST:event_formWindowClosing
+    private void windowOnClosing(){
+        if(lMSDriver!=null){
+            lMSDriver.close();
+        }
+        System.exit(0);
+    }
+    private void onclickSolution() {
+        if (!checkComboBoxQuiz()) {
+            return;
+        }
+        new Thread(() -> {
+            setEnbledAll(false);
+            int quizId = cbbQuiz.getSelectedIndex() - 1;
+            if (Main.course.getQuizs()[quizId].getAnswerBases() == null) {
+                setProcess("Get ansewerbase ...");
+                AnswerBase[] answerBases;
+                try {
+                    answerBases = LMSGetAnswerBase.parse(Main.account, Main.course.getQuizs()[quizId]);
+                } catch (LMSException ex) {
+                    setProcess("ThienDepZaii is the best.");
+                    tfCookie.setEnabled(true);
+                    cbbServer.setEnabled(true);
+                    btnLogin.setEnabled(true);
+                    tfRefIdCourse.setEnabled(true);
+                    btnGetQuiz.setEnabled(true);
+                    cbbQuiz.setEnabled(true);
+                    btnView.setEnabled(true);
+                    btnSolution.setEnabled(true);
+                    MsgBox.alertWar(this, "Không thể get danh sách đáp án!\nCó thể bạn chưa 'Bắt đầu bài kiểm tra'.\nCó thể quiz không thể hack vì bảo mật.");
+                    return;
+                }
+                int i = 0;
+                setProcess("Get ansewerbase value....");
+                answerBases = poolExecAnswerbaseValue(Main.account, Main.course.getQuizs()[quizId], answerBases);
+                Main.course.getQuizs()[quizId].setAnswerBases(answerBases);
+            }
+            //
+            Quiz quiz = Main.course.getQuizs()[quizId];
+            AnswerBase[] answerBases = quiz.getAnswerBases();
+            //
+            if(lMSDriver==null){
+                setProcess("Driver loading...");
+                lMSDriver = new LMSChromeDriver(Main.account);
+                lMSDriver.init();    
+            }
+            
+            //
+            setProcess("Solving ...");
+            LMSSolution lMSSolution = new LMSDriverSolution(lMSDriver, quiz);
+            new Thread(lMSSolution).start();
+            //
+            while(lMSSolution.getProgress()>-1 && lMSSolution.getProgress()<answerBases.length){
+                setProcess("Solving "+lMSSolution.getProgress()+"/"+answerBases.length+" question...");
+            }
+            switch(lMSSolution.getProgress()){
+                case -1:
+                    MsgBox.alertWar(this, "Quiz này đã làm và không còn khả năng làm lại!");
+                    break;
+                case -2:
+                    MsgBox.alertWar(this, "Quiz này bạn đã làm rồi!\nNếu muốn làm lại, hãy sử dụng chức năng view Solution");
+                    break;
+                case -3:
+                    MsgBox.alertWar(this, "Quiz hiện chưa bắt đầu!\nBạn cần bắt đầu làm trước khi auto!");
+                    break;
+            }
+            if(lMSSolution.getProgress()>=-1){
+                setProcess("Submitting...");
+                Util.sleep(2000);
+            }
+            setProcess("Solving "+lMSSolution.getProgress()+"/"+answerBases.length+" question done.");
+            MsgBox.alertInf(this, "Thành công!");
+            setEnbledAll(true);
+        }).start();
+    }
+
     private void onclickViewBestSolution() {
         if (!checkComboBoxQuiz()) {
             return;
@@ -398,7 +495,8 @@ public class FormMain extends javax.swing.JFrame {
                     btnGetQuiz.setEnabled(true);
                     cbbQuiz.setEnabled(true);
                     btnView.setEnabled(true);
-                    MsgBox.alert(this, "Không thể get danh sách đáp án {1} !");
+                    btnSolution.setEnabled(true);
+                    MsgBox.alertWar(this, "Không thể get danh sách đáp án!\nCó thể bạn chưa 'Bắt đầu bài kiểm tra'.\nCó thể quiz không thể hack vì bảo mật.");
                     return;
                 }
                 int i = 0;
@@ -452,6 +550,7 @@ public class FormMain extends javax.swing.JFrame {
             btnGetQuiz.setEnabled(true);
             cbbQuiz.setEnabled(true);
             btnView.setEnabled(true);
+            btnSolution.setEnabled(true);
             course.setQuizs(quizs);
             Main.course = course;
             cbbQuiz.removeAllItems();
@@ -479,7 +578,7 @@ public class FormMain extends javax.swing.JFrame {
                 tfCookie.setEnabled(true);
                 cbbServer.setEnabled(true);
                 btnLogin.setEnabled(true);
-                MsgBox.alertWar(this, "Đăng nhập thất bại!");
+                MsgBox.alertErr(this, "Đăng nhập thất bại!");
                 return;
             }
             tfCookie.setEnabled(true);
@@ -491,6 +590,7 @@ public class FormMain extends javax.swing.JFrame {
             lbEmail.setText("ID: " + Main.account.getId());
             lbGender.setText("Gender: " + Main.account.getSex());
             lbRole.setText("Role: " + Main.account.getRole());
+            lMSDriver = null;
             setProcess("Login success!");
         }).start();
     }
@@ -507,6 +607,7 @@ public class FormMain extends javax.swing.JFrame {
         btnGetQuiz.setEnabled(enb);
         cbbQuiz.setEnabled(enb);
         btnView.setEnabled(enb);
+        btnSolution.setEnabled(enb);
     }
 
     private boolean checkFormLogin() {
@@ -516,28 +617,49 @@ public class FormMain extends javax.swing.JFrame {
         }
         return true;
     }
-    
-    private static AnswerBase[] poolExecAnswerbaseValue(Account account, Quiz quiz, AnswerBase[] answerBases){
+
+    private static Quiz[] poolExecGetQuizState(Account account, Quiz[] quizs) {
+        LMSPoolGetQuizState[] lMSPoolGetQuizStates = new LMSPoolGetQuizState[quizs.length];
+        for (int i = 0; i < quizs.length; i++) {
+            lMSPoolGetQuizStates[i] = new LMSPoolGetQuizState(account, quizs[i]);
+        }
+        PoolExec poolExec = new PoolExec(lMSPoolGetQuizStates);
+        poolExec.execute();
+        while (poolExec.isTerminating()) {
+            Util.sleep(1000);
+        }
+        List<Quiz> alQuizs = new ArrayList<>();
+        for (LMSPoolGetQuizState lMSPoolGetQuizState : lMSPoolGetQuizStates) {
+            alQuizs.add(lMSPoolGetQuizState.getQuiz());
+        }
+        Collections.sort(alQuizs);
+        for (int i = 0; i < quizs.length; i++) {
+            quizs[i] = alQuizs.get(i);
+        }
+        return quizs;
+    }
+
+    private static AnswerBase[] poolExecAnswerbaseValue(Account account, Quiz quiz, AnswerBase[] answerBases) {
         LMSPoolGetAnswerBaseValue[] lMSPoolGetAnswerBaseValues = new LMSPoolGetAnswerBaseValue[answerBases.length];
-        for(int i=0; i<answerBases.length; i++){
+        for (int i = 0; i < answerBases.length; i++) {
             lMSPoolGetAnswerBaseValues[i] = new LMSPoolGetAnswerBaseValue(account, quiz, answerBases[i]);
         }
-        PoolExec polExec = new PoolExec(lMSPoolGetAnswerBaseValues);
-        polExec.execute();
-        while(polExec.isTerminating()){
-            Util.sleep(1000);
+        PoolExec poolExec = new PoolExec(lMSPoolGetAnswerBaseValues);
+        poolExec.execute();
+        while (poolExec.isTerminating()) {
+            Util.sleep(100);
         }
         List<AnswerBase> alAnswerbase = new ArrayList<>();
         for (LMSPoolGetAnswerBaseValue lMSPoolGetAnswerBaseValue : lMSPoolGetAnswerBaseValues) {
             alAnswerbase.add(lMSPoolGetAnswerBaseValue.getAnswerBase());
         }
         Collections.sort(alAnswerbase);
-        for(int i=0; i<alAnswerbase.size(); i++){
+        for (int i = 0; i < alAnswerbase.size(); i++) {
             answerBases[i] = alAnswerbase.get(i);
         }
         return answerBases;
     }
-    
+
     private boolean checkFormGetQuiz() {
         try {
             Integer.parseInt(tfRefIdCourse.getText().trim());

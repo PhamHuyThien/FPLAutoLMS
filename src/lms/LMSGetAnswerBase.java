@@ -24,6 +24,7 @@ public class LMSGetAnswerBase {
     
     
     public static AnswerBase[] parse(Account account, Quiz quiz) throws LMSException{
+        
         String body = getAnswerBaseBody(account, quiz.getId());
         Document document = Jsoup.parse(body);
         AnswerBase[] answerBases = getAnswerBases(document);
@@ -50,7 +51,7 @@ public class LMSGetAnswerBase {
                 i++;
             }
             return answerBases;
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
             throw new LMSException("getAnswerBases->thẻ <tbody> <tr> <td> <a> có thể không tồn tại!");
         }
     }

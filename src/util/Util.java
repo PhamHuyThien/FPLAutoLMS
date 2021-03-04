@@ -5,15 +5,37 @@
  */
 package util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import sun.misc.BASE64Encoder;
 
 /**
  *
  * @author Administrator
  */
 public class Util {
+
+    public static String URLEncoder(String url) {
+        String encoder = null;
+        try {
+            encoder = URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+        }
+        return encoder;
+    }
+
+    public static String base64Encode(String inp) {
+        BASE64Encoder b64 = new BASE64Encoder();
+        return b64.encodeBuffer(inp.getBytes());
+    }
+
+    public static long toSecond() {
+        return new Date().getTime() / 1000;
+    }
 
     public static void sleep(long time) {
         try {

@@ -11,9 +11,11 @@ import java.util.Arrays;
  *
  * @author Administrator
  */
-public class Quiz {
+public class Quiz implements Comparable<Quiz> {
+
     private int id;
     private String name;
+    private QuizState quizState;
     private AnswerBase[] answerBases;
 
     public Quiz() {
@@ -23,9 +25,10 @@ public class Quiz {
         this.id = id;
     }
 
-    public Quiz(int id, String name, AnswerBase[] answerBases) {
+    public Quiz(int id, String name, QuizState quizState, AnswerBase[] answerBases) {
         this.id = id;
         this.name = name;
+        this.quizState = quizState;
         this.answerBases = answerBases;
     }
 
@@ -45,6 +48,14 @@ public class Quiz {
         this.name = name;
     }
 
+    public QuizState getQuizState() {
+        return quizState;
+    }
+
+    public void setQuizState(QuizState quizState) {
+        this.quizState = quizState;
+    }
+
     public AnswerBase[] getAnswerBases() {
         return answerBases;
     }
@@ -55,7 +66,15 @@ public class Quiz {
 
     @Override
     public String toString() {
-        return "Quiz{" + "id=" + id + ", name=" + name + ", answerBases=" + Arrays.toString(answerBases) + '}';
+        return "Quiz{" + "id=" + id + ", name=" + name + ", quizState=" + quizState.toString() + ", answerBases=" + Arrays.toString(answerBases) + '}';
     }
-    
+
+    @Override
+    public int compareTo(Quiz o) {
+        if (o == null) {
+            return 1;
+        }
+        return this.getId() - o.getId();
+    }
+
 }
