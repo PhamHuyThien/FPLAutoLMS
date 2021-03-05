@@ -12,6 +12,7 @@ import model.QuizState;
 import org.jsoup.Jsoup;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import util.Util;
 
 /**
  *
@@ -60,19 +61,29 @@ public class LmsDriverSolution extends LmsSolution implements Runnable{
             int bestSolutionId = super.getQuiz().getAnswerBases()[i].getBestSolutionId();
             WebElement welmBestChoice = lmsDriver.getWebDriver().findElement(By.xpath("//input[@type='radio'][@value='" + bestSolutionId + "']"));
             welmBestChoice.click();
-            try {
+            try { // click next
                 WebElement welmButtonNext = lmsDriver.getWebDriver().findElement(By.xpath("//a[@id='bottomnextbutton']"));
                 welmButtonNext.click();
-
-            } catch (Exception e) {
-                WebElement welmButtonEnd = lmsDriver.getWebDriver().findElement(By.xpath("//a[@class='ilTstNavElem btn btn-default']"));
+            } catch (Exception e) { // next not found
+                //click end of test 
+                WebElement welmButtonEnd = lmsDriver.getWebDriver().findElement(By.xpath("//li[@class='ilToolbarStickyItem']"));
                 welmButtonEnd.click();
+                //
                 super.progress = getTotalProgress();
                 break;
             }
+            try {
+                //turn off notifications 
+                Util.sleep(500);
+                WebElement welmDontShowMes = lmsDriver.getWebDriver().findElement(By.xpath("//input[@type='checkbox']"));
+                welmDontShowMes.click();
+                WebElement welmSend = lmsDriver.getWebDriver().findElement(By.xpath("//a[@id='tst_save_on_navigation_button']"));
+                welmSend.click();
+            } catch (Exception e) {
+            }
             super.progress += 1;
         }
-        try {
+        try { // click yes, i am want to finish
             WebElement welmYesFinish = lmsDriver.getWebDriver().findElement(By.xpath("//input[@class='btn btn-default']"));
             welmYesFinish.click();
         } catch (Exception e) {
