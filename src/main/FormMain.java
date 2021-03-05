@@ -1,20 +1,21 @@
 package main;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import lms.LMSException;
-import lms.LMSGetAnswerBase;
-import lms.LMSGetCourse;
-import lms.LMSGetQuiz;
-import lms.LMSLogin;
-import lms.LMSSolution;
-import lms.LMSUtil;
+import lms.LmsException;
+import lms.LmsGetAnswerBase;
+import lms.LmsGetCourse;
+import lms.LmsGetQuiz;
+import lms.LmsLogin;
+import lms.LmsSolution;
+import lms.LmsUtil;
 import lms.pool.LMSPoolGetAnswerBaseValue;
 import lms.pool.LMSPoolGetQuizState;
-import lms.selenium.LMSChromeDriver;
-import lms.selenium.LMSDriver;
-import lms.selenium.LMSDriverSolution;
+import lms.selenium.LmsChromeDriver;
+import lms.selenium.LmsDriver;
+import lms.selenium.LmsDriverSolution;
 import model.Account;
 import model.AnswerBase;
 import model.Course;
@@ -32,7 +33,9 @@ import util.Util;
  * @Gmail ThienDz.DEV@gmail.com
  */
 public class FormMain extends javax.swing.JFrame {
-    LMSDriver lMSDriver;
+
+    LmsDriver lmsDriver;
+
     public FormMain() {
         initComponents();
         setLocationRelativeTo(null);
@@ -62,6 +65,7 @@ public class FormMain extends javax.swing.JFrame {
         btnGetQuiz = new javax.swing.JButton();
         cbbQuiz = new javax.swing.JComboBox<>();
         btnView = new javax.swing.JButton();
+        cbAutoStartQuiz = new javax.swing.JCheckBox();
         lbProcess = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         lbInfo = new javax.swing.JLabel();
@@ -160,7 +164,7 @@ public class FormMain extends javax.swing.JFrame {
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Solution:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", 0, 11))); // NOI18N
 
         btnSolution.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        btnSolution.setText("Auto Solution Coming soon");
+        btnSolution.setText("Auto Solution (Beta Test)");
         btnSolution.setEnabled(false);
         btnSolution.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -242,19 +246,25 @@ public class FormMain extends javax.swing.JFrame {
             }
         });
 
+        cbAutoStartQuiz.setFont(new java.awt.Font("Consolas", 0, 10)); // NOI18N
+        cbAutoStartQuiz.setText("auto Start Quiz(Coming soon)");
+        cbAutoStartQuiz.setEnabled(false);
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+            .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(cbbQuiz, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
-                        .addComponent(tfRefIdCourse)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGetQuiz))
-                    .addComponent(btnView, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbbQuiz, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnView, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(tfRefIdCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnGetQuiz)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(cbAutoStartQuiz, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -266,6 +276,8 @@ public class FormMain extends javax.swing.JFrame {
                     .addComponent(btnGetQuiz))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cbbQuiz, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cbAutoStartQuiz)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnView, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -296,7 +308,7 @@ public class FormMain extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSolution)
-                .addGap(112, 112, 112))
+                .addGap(113, 113, 113))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -399,12 +411,15 @@ public class FormMain extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         windowOnClosing();
     }//GEN-LAST:event_formWindowClosing
-    private void windowOnClosing(){
-        if(lMSDriver!=null){
-            lMSDriver.close();
+    private void windowOnClosing() {
+        if (lmsDriver != null) {
+            lmsDriver.close();
         }
+        dispose();
+        OS.openTabBrowser(Main.APP_CONTACT);
         System.exit(0);
     }
+
     private void onclickSolution() {
         if (!checkComboBoxQuiz()) {
             return;
@@ -416,8 +431,8 @@ public class FormMain extends javax.swing.JFrame {
                 setProcess("Get ansewerbase ...");
                 AnswerBase[] answerBases;
                 try {
-                    answerBases = LMSGetAnswerBase.parse(Main.account, Main.course.getQuizs()[quizId]);
-                } catch (LMSException ex) {
+                    answerBases = LmsGetAnswerBase.parse(Main.account, Main.course.getQuizs()[quizId]);
+                } catch (LmsException ex) {
                     setProcess("ThienDepZaii is the best.");
                     tfCookie.setEnabled(true);
                     cbbServer.setEnabled(true);
@@ -427,7 +442,7 @@ public class FormMain extends javax.swing.JFrame {
                     cbbQuiz.setEnabled(true);
                     btnView.setEnabled(true);
                     btnSolution.setEnabled(true);
-                    MsgBox.alertWar(this, "Không thể get danh sách đáp án!\nCó thể bạn chưa 'Bắt đầu bài kiểm tra'.\nCó thể quiz không thể hack vì bảo mật.");
+                    MsgBox.alertWar(this, "Không thể get danh sách đáp án!\nCó thể bạn chưa 'Bắt đầu bài kiểm tra'.\n Có thể bạn 'hết thời gian làm bài'.");
                     return;
                 }
                 int i = 0;
@@ -439,21 +454,26 @@ public class FormMain extends javax.swing.JFrame {
             Quiz quiz = Main.course.getQuizs()[quizId];
             AnswerBase[] answerBases = quiz.getAnswerBases();
             //
-            if(lMSDriver==null){
+            if (lmsDriver == null) {
                 setProcess("Driver loading...");
-                lMSDriver = new LMSChromeDriver(Main.account);
-                lMSDriver.init();    
+                lmsDriver = new LmsChromeDriver(Main.account);
+                try {
+                    lmsDriver.init();
+                } catch (FileNotFoundException ex) {
+                    MsgBox.alertErr(this, "Không tìm thấy driver!");
+                    return;
+                }
             }
-            
+
             //
             setProcess("Solving ...");
-            LMSSolution lMSSolution = new LMSDriverSolution(lMSDriver, quiz);
-            new Thread(lMSSolution).start();
+            LmsSolution lmsSolution = new LmsDriverSolution(lmsDriver, quiz);
+            new Thread(lmsSolution).start();
             //
-            while(lMSSolution.getProgress()>-1 && lMSSolution.getProgress()<answerBases.length){
-                setProcess("Solving "+lMSSolution.getProgress()+"/"+answerBases.length+" question...");
+            while (lmsSolution.getProgress() > -1 && lmsSolution.getProgress() < answerBases.length) {
+                setProcess("Solving " + lmsSolution.getProgress() + "/" + answerBases.length + " question...");
             }
-            switch(lMSSolution.getProgress()){
+            switch (lmsSolution.getProgress()) {
                 case -1:
                     MsgBox.alertWar(this, "Quiz này đã làm và không còn khả năng làm lại!");
                     break;
@@ -464,11 +484,11 @@ public class FormMain extends javax.swing.JFrame {
                     MsgBox.alertWar(this, "Quiz hiện chưa bắt đầu!\nBạn cần bắt đầu làm trước khi auto!");
                     break;
             }
-            if(lMSSolution.getProgress()>=-1){
+            if (lmsSolution.getProgress() >= -1) {
                 setProcess("Submitting...");
                 Util.sleep(2000);
             }
-            setProcess("Solving "+lMSSolution.getProgress()+"/"+answerBases.length+" question done.");
+            setProcess("Solving " + lmsSolution.getProgress() + "/" + answerBases.length + " question done.");
             MsgBox.alertInf(this, "Thành công!");
             setEnbledAll(true);
         }).start();
@@ -485,8 +505,8 @@ public class FormMain extends javax.swing.JFrame {
                 setProcess("Get ansewerbase ...");
                 AnswerBase[] answerBases;
                 try {
-                    answerBases = LMSGetAnswerBase.parse(Main.account, Main.course.getQuizs()[quizId]);
-                } catch (LMSException ex) {
+                    answerBases = LmsGetAnswerBase.parse(Main.account, Main.course.getQuizs()[quizId]);
+                } catch (LmsException ex) {
                     setProcess("ThienDepZaii is the best.");
                     tfCookie.setEnabled(true);
                     cbbServer.setEnabled(true);
@@ -496,7 +516,7 @@ public class FormMain extends javax.swing.JFrame {
                     cbbQuiz.setEnabled(true);
                     btnView.setEnabled(true);
                     btnSolution.setEnabled(true);
-                    MsgBox.alertWar(this, "Không thể get danh sách đáp án!\nCó thể bạn chưa 'Bắt đầu bài kiểm tra'.\nCó thể quiz không thể hack vì bảo mật.");
+                    MsgBox.alertWar(this, "Không thể get danh sách đáp án!\nCó thể bạn chưa 'Bắt đầu bài kiểm tra'.\n Có thể bạn 'hết thời gian làm bài'.");
                     return;
                 }
                 int i = 0;
@@ -526,14 +546,14 @@ public class FormMain extends javax.swing.JFrame {
             try {
                 refIdCourse = Integer.parseInt(tfRefIdCourse.getText().trim());
             } catch (NumberFormatException e) {
-                refIdCourse = LMSUtil.parseRefId(tfRefIdCourse.getText().trim());
+                refIdCourse = LmsUtil.parseRefId(tfRefIdCourse.getText().trim());
             }
-            Course course = LMSGetCourse.parse(Main.account, refIdCourse);
+            Course course = LmsGetCourse.parse(Main.account, refIdCourse);
             setProcess("Get list quiz ...");
             Quiz[] quizs;
             try {
-                quizs = LMSGetQuiz.parse(Main.account, course);
-            } catch (LMSException ex) {
+                quizs = LmsGetQuiz.parse(Main.account, course);
+            } catch (LmsException ex) {
                 setProcess("ThienDepZaii is the best.");
                 tfCookie.setEnabled(true);
                 cbbServer.setEnabled(true);
@@ -552,13 +572,14 @@ public class FormMain extends javax.swing.JFrame {
             btnView.setEnabled(true);
             btnSolution.setEnabled(true);
             course.setQuizs(quizs);
-            Main.course = course;
             cbbQuiz.removeAllItems();
             cbbQuiz.addItem("Select quiz...");
             for (Quiz quiz : quizs) {
-                cbbQuiz.addItem(quiz.getName());
+                String isSupport = quiz.isAutomationSupport() ? "" : "(NOT SUPPORT)";
+                cbbQuiz.addItem(quiz.getName() + " " + isSupport);
             }
             setProcess("Get list quiz done.");
+            Main.course = course;
         }).start();
     }
 
@@ -572,8 +593,8 @@ public class FormMain extends javax.swing.JFrame {
             setEnbledAll(false);
             setProcess("Login...");
             try {
-                Main.account = LMSLogin.parse(server, cookie);
-            } catch (LMSException e) {
+                Main.account = LmsLogin.parse(server, cookie);
+            } catch (LmsException e) {
                 setProcess("ThienDepZaii is the best.");
                 tfCookie.setEnabled(true);
                 cbbServer.setEnabled(true);
@@ -590,8 +611,8 @@ public class FormMain extends javax.swing.JFrame {
             lbEmail.setText("ID: " + Main.account.getId());
             lbGender.setText("Gender: " + Main.account.getSex());
             lbRole.setText("Role: " + Main.account.getRole());
-            lMSDriver = null;
             setProcess("Login success!");
+            lmsDriver = null;
         }).start();
     }
 
@@ -664,7 +685,7 @@ public class FormMain extends javax.swing.JFrame {
         try {
             Integer.parseInt(tfRefIdCourse.getText().trim());
         } catch (NumberFormatException e) {
-            int id = LMSUtil.parseRefId(tfRefIdCourse.getText().trim());
+            int id = LmsUtil.parseRefId(tfRefIdCourse.getText().trim());
             if (id == -1) {
                 MsgBox.alertWar(this, "RefId không hợp lệ!");
                 return false;
@@ -675,7 +696,12 @@ public class FormMain extends javax.swing.JFrame {
 
     private boolean checkComboBoxQuiz() {
         if (cbbQuiz.getSelectedIndex() == 0) {
-            MsgBox.alert(this, "Bạn phải chọn 1 quiz!");
+            MsgBox.alertWar(this, "Bạn phải chọn 1 quiz!");
+            return false;
+        }
+        String text = cbbQuiz.getSelectedItem().toString();
+        if(text.contains("(NOT SUPPORT)")){
+            MsgBox.alertErr(this, "Quiz này không hỗ trợ!");
             return false;
         }
         return true;
@@ -715,6 +741,7 @@ public class FormMain extends javax.swing.JFrame {
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnSolution;
     private javax.swing.JButton btnView;
+    private javax.swing.JCheckBox cbAutoStartQuiz;
     private javax.swing.JComboBox<String> cbbQuiz;
     private javax.swing.JComboBox<String> cbbServer;
     private javax.swing.JPanel jPanel1;

@@ -18,7 +18,7 @@ import sun.misc.BASE64Encoder;
  * @author Administrator
  */
 public class Util {
-
+    
     public static String URLEncoder(String url) {
         String encoder = null;
         try {

@@ -5,13 +5,16 @@
  */
 package lms;
 
+import model.Account;
+import model.Course;
+
 /**
  *
  * @author Administrator
  */
-public class LMSException extends Exception {
+public class LmsGetCourse {
 
-    public LMSException(String except) {
-        super(except);
+    public static Course parse(Account account, int refIdCourse) {
+        return new Course(refIdCourse);
     }
 }

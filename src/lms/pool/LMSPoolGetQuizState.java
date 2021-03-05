@@ -5,7 +5,7 @@
  */
 package lms.pool;
 
-import lms.LMSUtil;
+import lms.LmsUtil;
 import model.Account;
 import model.Quiz;
 import model.QuizState;
@@ -29,7 +29,7 @@ public class LMSPoolGetQuizState implements Runnable{
     
     @Override
     public void run() {
-        QuizState quizState = LMSUtil.getQuizState(this.account, this.quiz);
+        QuizState quizState = LmsUtil.getQuizState(this.account, this.quiz);
         quiz.setQuizState(quizState);
     }
     

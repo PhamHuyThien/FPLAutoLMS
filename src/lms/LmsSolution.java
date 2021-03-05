@@ -5,34 +5,38 @@
  */
 package lms;
 
-import com.httprequest.HttpRequest;
 import model.Account;
-import model.Form;
 import model.Quiz;
-import model.QuizState;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import util.Util;
 
 /**
  *
  * @author Administrator
  */
-public abstract class LMSSolution implements Runnable{
+public abstract class LmsSolution implements Runnable{
 
     protected static final String URL_BASE = "%s/ilias.php?ref_id=%s&cmd=infoScreen&cmdClass=ilobjtestgui&cmdNode=q4:ll&baseClass=ilRepositoryGUI";
     protected static final String URL_POST_ANSWER_BASE = "%s/ilias.php?ref_id=%s&sequence=%s&pmode=edit&cmd=post&cmdClass=iltestplayerfixedquestionsetgui&cmdNode=q4:ll:wm&baseClass=ilRepositoryGUI&fallbackCmd=submitIntermediateSolution&rtoken=%s&test_answer_changed=1";
     
-    protected Account account;
-    protected Quiz quiz;
+    private final Account account;
+    private final Quiz quiz;
     
     protected int progress;
 
-    public LMSSolution(Account account, Quiz quiz) {
+    public LmsSolution(Account account, Quiz quiz) {
         this.account = account;
         this.quiz = quiz;
     }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public Quiz getQuiz() {
+        return quiz;
+    }
+    
     
     public abstract void start();
-    public abstract  int getProgress();
+    public abstract int getProgress();
+    public abstract int getTotalProgress();
 }

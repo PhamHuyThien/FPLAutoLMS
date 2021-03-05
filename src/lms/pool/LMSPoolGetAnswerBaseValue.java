@@ -5,8 +5,8 @@
  */
 package lms.pool;
 
-import lms.LMSException;
-import lms.LMSGetAnswerBaseValue;
+import lms.LmsException;
+import lms.LmsGetAnswerBaseValue;
 import model.Account;
 import model.AnswerBase;
 import model.Quiz;
@@ -35,9 +35,9 @@ public class LMSPoolGetAnswerBaseValue implements Runnable {
     @Override
     public void run() {
         try {
-            this.answerBase = LMSGetAnswerBaseValue.parse(this.account, this.quiz, this.answerBase);
-        } catch (LMSException e) {
-            Console.debug("LMSPoolGetAnswerBaseValue->", LMSGetAnswerBaseValue.class, e);
+            this.answerBase = LmsGetAnswerBaseValue.parse(this.account, this.quiz, this.answerBase);
+        } catch (LmsException e) {
+            Console.debug("LMSPoolGetAnswerBaseValue->", LmsGetAnswerBaseValue.class, e);
         }
     }
 

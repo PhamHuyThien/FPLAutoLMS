@@ -15,12 +15,12 @@ import org.jsoup.nodes.Document;
  *
  * @author Administrator
  */
-public class LMSLogin {
+public class LmsLogin {
 
     private final static String URL_PERSONAL_PROFILE_BASE = "%s/ilias.php?cmdClass=ilpersonalprofilegui&cmdNode=oq:or&baseClass=ilPersonalDesktopGUI";
 
 
-    public static Account parse(Server server, String cookie) throws LMSException {
+    public static Account parse(Server server, String cookie) throws LmsException {
         String body = getProfileBody(server, cookie);
         Document document = Jsoup.parse(body);
         //
@@ -33,7 +33,7 @@ public class LMSLogin {
             account.setEmail(document.selectFirst("input[id='usr_email']").attr("value"));
             return account;
         } catch (NullPointerException e) {
-            throw new LMSException("Không thể lấy dữ liệu tài khoản!");
+            throw new LmsException("Không thể lấy dữ liệu tài khoản!");
         }
     }
 

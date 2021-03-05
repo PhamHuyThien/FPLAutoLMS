@@ -13,11 +13,13 @@ import model.Course;
  * @author Administrator
  */
 public class Main {
+    //
     public static FormMain formMain;
     public static FormShow formShow;
+    //
     public static Account account;
     public static Course course;
-    
+    //
     public static void main(String[] args) {
         formMain = new FormMain();
         formMain.setVisible(true);
@@ -25,7 +27,7 @@ public class Main {
     
     
     public static final String APP_NAME = "FPL@utoLMS";
-    public static final String APP_VER = "1.0.2";
+    public static final String APP_VER = "1.0.3";
     public static final String APP_SLOGAN = "10 Quiz 10 Point Easy!";
     public static final String APP_AUTHOR = "ThienDZaii";
     public static final String APP_NICKNAME = "SystemError";

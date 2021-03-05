@@ -15,6 +15,7 @@ public class Quiz implements Comparable<Quiz> {
 
     private int id;
     private String name;
+    private boolean automationSupport;
     private QuizState quizState;
     private AnswerBase[] answerBases;
 
@@ -46,6 +47,14 @@ public class Quiz implements Comparable<Quiz> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isAutomationSupport() {
+        return automationSupport;
+    }
+
+    public void setAutomationSupport(boolean automationSupport) {
+        this.automationSupport = automationSupport;
     }
 
     public QuizState getQuizState() {

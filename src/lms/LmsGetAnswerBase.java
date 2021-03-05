@@ -18,12 +18,12 @@ import org.jsoup.select.Elements;
  *
  * @author Administrator
  */
-public class LMSGetAnswerBase {
+public class LmsGetAnswerBase {
     
     private static final String URL_HACKQUIZ_BASE = "%s/ilias.php?ref_id=%s&active_id=&pass=0&cmd=outUserPassDetails&cmdClass=iltestevaluationgui&cmdNode=q4:ll:vx&baseClass=ilRepositoryGUI";
     
     
-    public static AnswerBase[] parse(Account account, Quiz quiz) throws LMSException{
+    public static AnswerBase[] parse(Account account, Quiz quiz) throws LmsException{
         
         String body = getAnswerBaseBody(account, quiz.getId());
         Document document = Jsoup.parse(body);
@@ -37,7 +37,7 @@ public class LMSGetAnswerBase {
         return HttpRequest.get(baseURL).header("cookie", account.getCookie()).body();
     }
     
-    private static AnswerBase[] getAnswerBases(Document document) throws LMSException{
+    private static AnswerBase[] getAnswerBases(Document document) throws LmsException{
         try {
             Element elmTbody = document.selectFirst("tbody");
             Elements elmsTr = elmTbody.select("tr");
@@ -52,7 +52,7 @@ public class LMSGetAnswerBase {
             }
             return answerBases;
         } catch (NullPointerException | IndexOutOfBoundsException e) {
-            throw new LMSException("getAnswerBases->thẻ <tbody> <tr> <td> <a> có thể không tồn tại!");
+            throw new LmsException("getAnswerBases->thẻ <tbody> <tr> <td> <a> có thể không tồn tại!");
         }
     }
 }

@@ -6,7 +6,6 @@
 package lms;
 
 import com.httprequest.HttpRequest;
-import java.util.Arrays;
 import java.util.HashMap;
 import model.Account;
 import model.Form;
@@ -21,7 +20,7 @@ import util.Util;
  *
  * @author Administrator
  */
-public class LMSUtil {
+public class LmsUtil {
 
     public static Form[] buildForm(Document document) {
         Elements elmsForm = document.select("form");
