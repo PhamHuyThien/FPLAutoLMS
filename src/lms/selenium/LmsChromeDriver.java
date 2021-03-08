@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import model.Account;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -53,7 +54,7 @@ public final class LmsChromeDriver extends LmsDriver {
         //
         super.setWebDriver(new ChromeDriver(chromeOptions));
         //set width height chrome
-        //super.webDriver.manage().window().setSize(new Dimension(700,500));
+//        super.getWebDriver().manage().window().setSize(new Dimension(700,500));
         super.getWebDriver().manage().window().setPosition(new Point(-32000, -32000));
         //
         super.getWebDriver().get(super.getAccount().getServer().parseURL());

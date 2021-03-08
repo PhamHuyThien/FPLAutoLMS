@@ -5,12 +5,12 @@
  */
 package lms;
 
-import com.httprequest.HttpRequest;
 import java.util.HashMap;
 import model.Account;
 import model.Form;
 import model.Quiz;
 import model.QuizState;
+import org.http.simple.JHttp;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -45,7 +45,7 @@ public class LmsUtil {
     public static QuizState getQuizState(Account account, Quiz quiz) {
         final String URL_BASE = "%s/ilias.php?ref_id=%s&cmd=infoScreen&cmdClass=ilobjtestgui&cmdNode=q4:ll&baseClass=ilRepositoryGUI";
         String url = String.format(URL_BASE, account.getServer().parseURL(), quiz.getId());
-        String body = HttpRequest.get(url).header("cookie", account.getCookie()).body();
+        String body = JHttp.get(url).cookie(account.getCookie()).body();
         Document document = Jsoup.parse(body);
         return getQuizState(document);
     }

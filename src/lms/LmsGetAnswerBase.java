@@ -5,10 +5,10 @@
  */
 package lms;
 
-import com.httprequest.HttpRequest;
 import model.Account;
 import model.AnswerBase;
 import model.Quiz;
+import org.http.simple.JHttp;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -34,7 +34,7 @@ public class LmsGetAnswerBase {
     
     private static String getAnswerBaseBody(Account account, int refIdQuiz){
         String baseURL = String.format(URL_HACKQUIZ_BASE, account.getServer().parseURL(), refIdQuiz);
-        return HttpRequest.get(baseURL).header("cookie", account.getCookie()).body();
+        return JHttp.get(baseURL).cookie(account.getCookie()).body();
     }
     
     private static AnswerBase[] getAnswerBases(Document document) throws LmsException{

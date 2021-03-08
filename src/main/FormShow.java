@@ -318,27 +318,11 @@ public class FormShow extends javax.swing.JFrame {
     }
 
     private void updateQuestion(String text) {
-        lbQuestion.setText(parseNewLineLabel(text));
+        lbQuestion.setText("<html>" + text + "</html>");
     }
 
     private void updateAnswer(String text) {
-        lbBestSolution.setText(parseNewLineLabel(text));
-    }
-
-    private static String parseNewLineLabel(String inp) {
-        int idNewLine = 8;
-        inp = inp.trim().replaceAll("\\s\\s", "\\s");
-        String[] centences = inp.split("\\s");
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < centences.length; i++) {
-            sb.append(centences[i]);
-            if (i != 0 && i % idNewLine == 0) {
-                sb.append("<br/>");
-            } else {
-                sb.append(" ");
-            }
-        }
-        return "<html>" + sb.toString().trim() + "</html>";
+        lbBestSolution.setText("<html>" + text + "</html>");
     }
 
     private void updateQuestionNum(String text) {

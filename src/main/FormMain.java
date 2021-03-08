@@ -16,6 +16,7 @@ import lms.pool.LMSPoolGetQuizState;
 import lms.selenium.LmsChromeDriver;
 import lms.selenium.LmsDriver;
 import lms.selenium.LmsDriverSolution;
+import lms.selenium.LmsDriverStartQuiz;
 import model.Account;
 import model.AnswerBase;
 import model.Course;
@@ -246,8 +247,9 @@ public class FormMain extends javax.swing.JFrame {
             }
         });
 
-        cbAutoStartQuiz.setFont(new java.awt.Font("Consolas", 0, 10)); // NOI18N
-        cbAutoStartQuiz.setText("auto Start Quiz(Coming soon)");
+        cbAutoStartQuiz.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        cbAutoStartQuiz.setSelected(true);
+        cbAutoStartQuiz.setText("auto Start Quiz (VIP)");
         cbAutoStartQuiz.setEnabled(false);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -427,32 +429,6 @@ public class FormMain extends javax.swing.JFrame {
         new Thread(() -> {
             setEnbledAll(false);
             int quizId = cbbQuiz.getSelectedIndex() - 1;
-            if (Main.course.getQuizs()[quizId].getAnswerBases() == null) {
-                setProcess("Get ansewerbase ...");
-                AnswerBase[] answerBases;
-                try {
-                    answerBases = LmsGetAnswerBase.parse(Main.account, Main.course.getQuizs()[quizId]);
-                } catch (LmsException ex) {
-                    setProcess("ThienDepZaii is the best.");
-                    tfCookie.setEnabled(true);
-                    cbbServer.setEnabled(true);
-                    btnLogin.setEnabled(true);
-                    tfRefIdCourse.setEnabled(true);
-                    btnGetQuiz.setEnabled(true);
-                    cbbQuiz.setEnabled(true);
-                    btnView.setEnabled(true);
-                    btnSolution.setEnabled(true);
-                    MsgBox.alertWar(this, "Không thể get danh sách đáp án!\nCó thể bạn chưa 'Bắt đầu bài kiểm tra'.\n Có thể bạn 'hết thời gian làm bài'.");
-                    return;
-                }
-                int i = 0;
-                setProcess("Get ansewerbase value....");
-                answerBases = poolExecAnswerbaseValue(Main.account, Main.course.getQuizs()[quizId], answerBases);
-                Main.course.getQuizs()[quizId].setAnswerBases(answerBases);
-            }
-            //
-            Quiz quiz = Main.course.getQuizs()[quizId];
-            AnswerBase[] answerBases = quiz.getAnswerBases();
             //
             if (lmsDriver == null) {
                 setProcess("Driver loading...");
@@ -460,11 +436,40 @@ public class FormMain extends javax.swing.JFrame {
                 try {
                     lmsDriver.init();
                 } catch (FileNotFoundException ex) {
+                    setEnbledAll(true);
                     MsgBox.alertErr(this, "Không tìm thấy driver!");
                     return;
                 }
             }
-
+            //
+            if (Main.course.getQuizs()[quizId].getAnswerBases() == null) {
+                setProcess("Get ansewerbase ...");
+                AnswerBase[] answerBases;
+                do {
+                    try {
+                        answerBases = LmsGetAnswerBase.parse(Main.account, Main.course.getQuizs()[quizId]);
+                        break;
+                    } catch (LmsException ex) {
+                        boolean startDone = false;
+                        if (cbAutoStartQuiz.isSelected()) {
+                            setProcess("Quiz starting...");
+                            startDone = LmsDriverStartQuiz.start(lmsDriver, Main.account, Main.course.getQuizs()[quizId]);
+                        }
+                        if (!startDone) {
+                            setProcess("ThienDepZaii is the best.");
+                            setEnbledAll(true);
+                            MsgBox.alertWar(this, "Không thể get danh sách đáp án!\nCó thể bạn chưa 'Bắt đầu bài kiểm tra'.\n Có thể bạn 'hết thời gian làm bài'.");
+                            return;
+                        }
+                    }
+                } while (true);
+                setProcess("Get ansewerbase value....");
+                answerBases = poolExecAnswerbaseValue(Main.account, Main.course.getQuizs()[quizId], answerBases);
+                Main.course.getQuizs()[quizId].setAnswerBases(answerBases);
+            }
+            //
+            Quiz quiz = Main.course.getQuizs()[quizId];
+            AnswerBase[] answerBases = quiz.getAnswerBases();
             //
             setProcess("Solving ...");
             LmsSolution lmsSolution = new LmsDriverSolution(lmsDriver, quiz);
@@ -484,9 +489,9 @@ public class FormMain extends javax.swing.JFrame {
                     MsgBox.alertWar(this, "Quiz hiện chưa bắt đầu!\nBạn cần bắt đầu làm trước khi auto!");
                     break;
             }
-            if (lmsSolution.getProgress() >= -1) {
+            if (lmsSolution.getProgress() >= 0) {
                 setProcess("Submitting...");
-                Util.sleep(2000);
+                Util.sleep(1000);
             }
             setProcess("Solving " + lmsSolution.getProgress() + "/" + answerBases.length + " question done.");
             MsgBox.alertInf(this, "Thành công!");
@@ -508,18 +513,10 @@ public class FormMain extends javax.swing.JFrame {
                     answerBases = LmsGetAnswerBase.parse(Main.account, Main.course.getQuizs()[quizId]);
                 } catch (LmsException ex) {
                     setProcess("ThienDepZaii is the best.");
-                    tfCookie.setEnabled(true);
-                    cbbServer.setEnabled(true);
-                    btnLogin.setEnabled(true);
-                    tfRefIdCourse.setEnabled(true);
-                    btnGetQuiz.setEnabled(true);
-                    cbbQuiz.setEnabled(true);
-                    btnView.setEnabled(true);
-                    btnSolution.setEnabled(true);
+                    setEnbledAll(true);
                     MsgBox.alertWar(this, "Không thể get danh sách đáp án!\nCó thể bạn chưa 'Bắt đầu bài kiểm tra'.\n Có thể bạn 'hết thời gian làm bài'.");
                     return;
                 }
-                int i = 0;
                 setProcess("Get ansewerbase value....");
                 answerBases = poolExecAnswerbaseValue(Main.account, Main.course.getQuizs()[quizId], answerBases);
                 Main.course.getQuizs()[quizId].setAnswerBases(answerBases);
@@ -563,14 +560,7 @@ public class FormMain extends javax.swing.JFrame {
                 MsgBox.alertErr(this, "Không thể tải danh sách quiz!");
                 return;
             }
-            tfCookie.setEnabled(true);
-            cbbServer.setEnabled(true);
-            btnLogin.setEnabled(true);
-            tfRefIdCourse.setEnabled(true);
-            btnGetQuiz.setEnabled(true);
-            cbbQuiz.setEnabled(true);
-            btnView.setEnabled(true);
-            btnSolution.setEnabled(true);
+            setEnbledAll(true);
             course.setQuizs(quizs);
             cbbQuiz.removeAllItems();
             cbbQuiz.addItem("Select quiz...");
@@ -627,6 +617,7 @@ public class FormMain extends javax.swing.JFrame {
         tfRefIdCourse.setEnabled(enb);
         btnGetQuiz.setEnabled(enb);
         cbbQuiz.setEnabled(enb);
+        cbAutoStartQuiz.setEnabled(enb);
         btnView.setEnabled(enb);
         btnSolution.setEnabled(enb);
     }
@@ -700,7 +691,7 @@ public class FormMain extends javax.swing.JFrame {
             return false;
         }
         String text = cbbQuiz.getSelectedItem().toString();
-        if(text.contains("(NOT SUPPORT)")){
+        if (text.contains("(NOT SUPPORT)")) {
             MsgBox.alertErr(this, "Quiz này không hỗ trợ!");
             return false;
         }

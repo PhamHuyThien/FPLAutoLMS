@@ -18,7 +18,7 @@ import util.Util;
  *
  * @author Administrator
  */
-public class LmsDriverSolution extends LmsSolution implements Runnable{
+public class LmsDriverSolution extends LmsSolution implements Runnable {
 
     private final LmsDriver lmsDriver;
 
@@ -48,10 +48,11 @@ public class LmsDriverSolution extends LmsSolution implements Runnable{
             super.progress = -2;
             return;
         }
-        if (quizState == QuizState.NOT_WORKING) {
+        if (quizState == QuizState.NEW_WORK) {
             super.progress = -3;
             return;
         }
+        boolean firstSolution = true;
         //button bắt đầu
         WebElement welmStart = lmsDriver.getWebDriver().findElement(By.xpath("//input[@class='btn btn-default btn-primary']"));
         welmStart.click();
@@ -72,15 +73,19 @@ public class LmsDriverSolution extends LmsSolution implements Runnable{
                 super.progress = getTotalProgress();
                 break;
             }
-            try {
-                //turn off notifications 
+            if (firstSolution) {
+                firstSolution = !firstSolution;
                 Util.sleep(500);
-                WebElement welmDontShowMes = lmsDriver.getWebDriver().findElement(By.xpath("//input[@type='checkbox']"));
-                welmDontShowMes.click();
-                WebElement welmSend = lmsDriver.getWebDriver().findElement(By.xpath("//a[@id='tst_save_on_navigation_button']"));
-                welmSend.click();
-            } catch (Exception e) {
+                try {
+                    //turn off notifications 
+                    WebElement welmDontShowMes = lmsDriver.getWebDriver().findElement(By.xpath("//input[@type='checkbox']"));
+                    welmDontShowMes.click();
+                    WebElement welmSend = lmsDriver.getWebDriver().findElement(By.xpath("//a[@id='tst_save_on_navigation_button']"));
+                    welmSend.click();
+                } catch (Exception e) {
+                }
             }
+
             super.progress += 1;
         }
         try { // click yes, i am want to finish

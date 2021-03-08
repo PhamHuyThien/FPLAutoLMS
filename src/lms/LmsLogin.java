@@ -5,9 +5,9 @@
  */
 package lms;
 
-import com.httprequest.HttpRequest;
 import model.Account;
 import model.Server;
+import org.http.simple.JHttp;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -39,6 +39,6 @@ public class LmsLogin {
 
     private static String getProfileBody(Server server, String cookie) {
         String serverURLProfile = String.format(URL_PERSONAL_PROFILE_BASE, server.parseURL());
-        return HttpRequest.get(serverURLProfile).header("cookie", cookie).body();
+        return JHttp.get(serverURLProfile).cookie(cookie).body();
     }
 }

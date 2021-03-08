@@ -13,9 +13,9 @@ import model.Quiz;
  *
  * @author Administrator
  */
-public class LMSHTTPSolution extends LmsSolution {
+public class LmsHttpSolution extends LmsSolution {
 
-    public LMSHTTPSolution(Account account, Quiz quiz) {
+    public LmsHttpSolution(Account account, Quiz quiz) {
         super(account, quiz);
     }
 

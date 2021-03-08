@@ -13,6 +13,11 @@
 
 ## `Lịch sử cập nhật`
 
+### `v1.0.5`
+- Update JHttp phiên bản mới nhất (v1.0.3)
+- Thêm checkbox tự động bắt đầu quiz (Chỉ auto quiz).
+- Thời gian submiting giảm xuống còn 1000milis
+
 ### `v1.0.4`
 - Fix lỗi không qua được câu hỏi (prompt không hiện lại câu hỏi).
 

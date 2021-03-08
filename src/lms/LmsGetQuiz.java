@@ -5,10 +5,10 @@
  */
 package lms;
 
-import com.httprequest.HttpRequest;
 import model.Account;
 import model.Course;
 import model.Quiz;
+import org.http.simple.JHttp;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -31,17 +31,18 @@ public class LmsGetQuiz {
 
     private static String getListQuizBody(Account account, Course course) {
         String urlBase = String.format(URL_QUIZ_BASE, account.getServer().parseURL(), course.getId());
-        return HttpRequest.get(urlBase).header("cookie", account.getCookie()).body();
+        return JHttp.get(urlBase).cookie(account.getCookie()).body();
     }
-    private static Quiz[] parseQuizs(Document document) throws LmsException{
+
+    private static Quiz[] parseQuizs(Document document) throws LmsException {
         Elements elmsItemContent = document.select("div[class='ilContainerListItemContent ']");
-        if(elmsItemContent.isEmpty()){
+        if (elmsItemContent.isEmpty()) {
             throw new LmsException("parseQuizs-> Quiz empty!");
         }
         try {
             Quiz[] quizs = new Quiz[elmsItemContent.size()];
-            int i=0;
-            for(Element elmItemContent: elmsItemContent){
+            int i = 0;
+            for (Element elmItemContent : elmsItemContent) {
                 Element elmLink = elmItemContent.selectFirst("a");
                 Element elmDesc = elmItemContent.selectFirst("div[class='ilListItemSection il_Description']");
                 quizs[i] = new Quiz();
