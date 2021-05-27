@@ -248,9 +248,13 @@ public class FormMain extends javax.swing.JFrame {
         });
 
         cbAutoStartQuiz.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        cbAutoStartQuiz.setSelected(true);
         cbAutoStartQuiz.setText("auto Start Quiz (VIP)");
         cbAutoStartQuiz.setEnabled(false);
+        cbAutoStartQuiz.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                cbAutoStartQuizStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -413,6 +417,15 @@ public class FormMain extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         windowOnClosing();
     }//GEN-LAST:event_formWindowClosing
+
+    private void cbAutoStartQuizStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbAutoStartQuizStateChanged
+        onchangeAutoStartQuiz();
+    }//GEN-LAST:event_cbAutoStartQuizStateChanged
+    
+    private void onchangeAutoStartQuiz() {
+
+    }
+
     private void windowOnClosing() {
         if (lmsDriver != null) {
             lmsDriver.close();

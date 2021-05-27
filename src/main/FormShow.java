@@ -296,6 +296,9 @@ public class FormShow extends javax.swing.JFrame {
 
     public void setQuiz(Quiz quiz) {
         this.quiz = quiz;
+        for(int i=0; i<quiz.getAnswerBases().length; i++){
+            System.out.println(quiz.getAnswerBases()[i].toString());
+        }
     }
 
     public void updateComponent() {
@@ -311,9 +314,16 @@ public class FormShow extends javax.swing.JFrame {
         if (id > -1 && id < getSizAnswerBase()) {
             setPageText(id + 1);
             updateQuestionNum("Câu hỏi số " + (id + 1) + ":");
-            int bestSolutionId = this.quiz.getAnswerBases()[id].getBestSolutionId();
+            int bestSolutionIds[] = this.quiz.getAnswerBases()[id].getBestSolutionIds();
             updateQuestion(this.quiz.getAnswerBases()[id].getQuestion());
-            updateAnswer(this.quiz.getAnswerBases()[id].getAnswerTexts()[bestSolutionId]);
+            StringBuilder sb  = new StringBuilder();
+            for(int i=0; i<bestSolutionIds.length; i++){
+                sb
+                        .append("- ")
+                        .append(this.quiz.getAnswerBases()[id].getAnswerTexts()[bestSolutionIds[i]])
+                        .append("<br/>");
+            }
+            updateAnswer(sb.toString());
         }
     }
 

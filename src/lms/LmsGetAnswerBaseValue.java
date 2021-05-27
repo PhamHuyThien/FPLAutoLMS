@@ -34,34 +34,43 @@ public class LmsGetAnswerBaseValue {
     private static AnswerBase parseAnswerBaseValue(Document document, AnswerBase answerBase) throws LmsException {
         try {
             answerBase.setAnswerTexts(parseListAnswerText(document));
-            answerBase.setBestSolutionId(parseBestSolutionId(document, answerBase));
+            answerBase.setBestSolutionIds(parseBestSolutionId(document, answerBase));
             return answerBase;
-        } catch (NullPointerException | LmsException e) {
+        } catch (LmsException | NullPointerException e) {
             throw new LmsException("parseAnswerBaseValue->" + e.toString());
         }
     }
 
     private static String[] parseListAnswerText(Document document) throws LmsException {
         Element elmTable = document.selectFirst("table[class='nobackground middle ilClearFloat']");
-        Elements elmsAnswerText = elmTable.select("span");
-        if (elmsAnswerText.isEmpty()) {
-            throw new LmsException("Không tìm thấy câu hỏi nào!");
+        if(elmTable == null){
+            elmTable = document.selectFirst("table[class='nobackground ilClearFloat']");
         }
-        String[] answerText = new String[elmsAnswerText.size()];
+        Elements elmsRows = elmTable.select("tr");
+        String[] answerText = new String[elmsRows.size()];
         int i = 0;
-        for (Element elmAnswerText : elmsAnswerText) {
-            answerText[i++] = elmAnswerText.text();
+        for (Element elmRow : elmsRows) {
+            Elements elmsCols = elmRow.select("td");
+            if(elmsCols.size()>1){
+                answerText[i++] = elmsCols.get(1).text();
+            }
         }
         return answerText;
     }
 
     
     
-    private static int parseBestSolutionId(Document document, AnswerBase answerBase) throws LmsException {
+    private static int[] parseBestSolutionId(Document document, AnswerBase answerBase) throws LmsException {
         String name = String.format("multiple_choice_result_q%s_bestsolution", answerBase.getId());
         try {
-            String bestSolutionId = document.selectFirst(String.format("input[name='%s'][checked]", name)).attr("value");
-            return Integer.parseInt(bestSolutionId);
+            Elements ElmsBestSolutionIds = document.select(String.format("input[name='%s'][checked]", name));
+            int[] bestSolutionIds = new int[ElmsBestSolutionIds.size()];
+            for(int i=0; i<bestSolutionIds.length; i++){
+                Element elmSolutionId = ElmsBestSolutionIds.get(i);
+                String solutionId = elmSolutionId.attr("value");
+                bestSolutionIds[i] = Integer.parseInt(solutionId);
+            }
+            return bestSolutionIds;
         } catch (NumberFormatException | NullPointerException e) {
             throw new LmsException("parseBestSolutionId->Không tìm thấy thẻ <input name=%s checked/>!");
         }

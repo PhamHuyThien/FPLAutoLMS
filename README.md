@@ -12,6 +12,8 @@
 - Xem clip hướng dẫn chi tiết: ([Xem hướng dẫn](https://www.youtube.com/watch?v=TYhdLhFD3j8&t=15s))
 
 ## `Lịch sử cập nhật`
+### `v1.0.6`
+- Auto được các câu hỏi có nhiều đáp án
 
 ### `v1.0.5`
 - Update JHttp phiên bản mới nhất (v1.0.3)

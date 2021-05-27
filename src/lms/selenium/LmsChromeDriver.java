@@ -54,8 +54,8 @@ public final class LmsChromeDriver extends LmsDriver {
         //
         super.setWebDriver(new ChromeDriver(chromeOptions));
         //set width height chrome
-//        super.getWebDriver().manage().window().setSize(new Dimension(700,500));
-        super.getWebDriver().manage().window().setPosition(new Point(-32000, -32000));
+        super.getWebDriver().manage().window().setSize(new Dimension(700,500));
+//        super.getWebDriver().manage().window().setPosition(new Point(-32000, -32000));
         //
         super.getWebDriver().get(super.getAccount().getServer().parseURL());
         //Buff cookie

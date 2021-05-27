@@ -59,9 +59,15 @@ public class LmsDriverSolution extends LmsSolution implements Runnable {
         //load qua tất cả các câu hỏi
         for (int i = 0; i < getTotalProgress(); i++) {
             //select radio best choice
-            int bestSolutionId = super.getQuiz().getAnswerBases()[i].getBestSolutionId();
-            WebElement welmBestChoice = lmsDriver.getWebDriver().findElement(By.xpath("//input[@type='radio'][@value='" + bestSolutionId + "']"));
-            welmBestChoice.click();
+            int bestSolutionIds[] = super.getQuiz().getAnswerBases()[i].getBestSolutionIds();
+            String inputType = bestSolutionIds.length > 1 ? "checkbox" : "radio";
+            for (int j = 0; j < bestSolutionIds.length; j++) {
+                String XPATH = "//input[@type='%s'][@value='%d']";
+                XPATH = String.format(XPATH, inputType, bestSolutionIds[j]);
+                WebElement welmBestChoice = lmsDriver.getWebDriver().findElement(By.xpath(XPATH));
+                welmBestChoice.click();
+                Util.sleep(200);
+            }
             try { // click next
                 WebElement welmButtonNext = lmsDriver.getWebDriver().findElement(By.xpath("//a[@id='bottomnextbutton']"));
                 welmButtonNext.click();

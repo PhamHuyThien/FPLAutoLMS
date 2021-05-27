@@ -16,7 +16,7 @@ public class AnswerBase implements Comparable<AnswerBase> {
     private int id;
     private String question;
     private String[] answerTexts;
-    private int bestSolutionId;
+    private int[] bestSolutionIds;
 
     public AnswerBase() {
     }
@@ -25,11 +25,11 @@ public class AnswerBase implements Comparable<AnswerBase> {
         this.id = id;
     }
 
-    public AnswerBase(int id, String question, String[] answerTexts, int bestSolutionId) {
+    public AnswerBase(int id, String question, String[] answerTexts, int[] bestSolutionIds) {
         this.id = id;
         this.question = question;
         this.answerTexts = answerTexts;
-        this.bestSolutionId = bestSolutionId;
+        this.bestSolutionIds = bestSolutionIds;
     }
 
     public int getId() {
@@ -56,19 +56,19 @@ public class AnswerBase implements Comparable<AnswerBase> {
         this.answerTexts = answerTexts;
     }
 
-    public int getBestSolutionId() {
-        return bestSolutionId;
+    public int[] getBestSolutionIds() {
+        return bestSolutionIds;
     }
 
-    public void setBestSolutionId(int bestSolutionId) {
-        this.bestSolutionId = bestSolutionId;
+    public void setBestSolutionIds(int[] bestSolutionIds) {
+        this.bestSolutionIds = bestSolutionIds;
     }
 
     @Override
     public String toString() {
-        return "AnswerBase{" + "id=" + id + ", question=" + question + ", answerTexts=" + Arrays.toString(answerTexts) + ", bestSolutionId=" + bestSolutionId + '}';
+        return "AnswerBase{" + "id=" + id + ", question=" + question + ", answerTexts=" + Arrays.toString(answerTexts) + ", bestSolutionIds=" + Arrays.toString(bestSolutionIds) + '}';
     }
-
+    
     @Override
     public int compareTo(AnswerBase o) {
         if (o == null) {
