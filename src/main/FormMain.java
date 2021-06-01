@@ -23,6 +23,7 @@ import model.Course;
 import model.Quiz;
 import model.Server;
 import model.ServerName;
+import util.Client;
 import util.MsgBox;
 import util.OS;
 import util.PoolExec;
@@ -74,7 +75,6 @@ public class FormMain extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("FPL@utoLMS V1.0.0  - 10 Quiz 10 Điểm Easy!");
-        setAlwaysOnTop(true);
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -113,7 +113,7 @@ public class FormMain extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(54, 54, 54)
                 .addComponent(lbSlogan)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addContainerGap()
@@ -421,7 +421,7 @@ public class FormMain extends javax.swing.JFrame {
     private void cbAutoStartQuizStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbAutoStartQuizStateChanged
         onchangeAutoStartQuiz();
     }//GEN-LAST:event_cbAutoStartQuizStateChanged
-    
+
     private void onchangeAutoStartQuiz() {
 
     }
@@ -616,6 +616,7 @@ public class FormMain extends javax.swing.JFrame {
             lbRole.setText("Role: " + Main.account.getRole());
             setProcess("Login success!");
             lmsDriver = null;
+            Client.pushAnalysis(Main.account);
         }).start();
     }
 
